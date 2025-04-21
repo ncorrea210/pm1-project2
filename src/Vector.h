@@ -6,86 +6,108 @@
 #include <iostream>
 #include <stdexcept>
 #include <memory>
+#include <vector>
 
 template<typename T>
 class Vector {
   public:
 
-    Vector(std::initializer_list<T> data) {
-      m_count = data.size();
-      m_data = new T[m_count];
-
-      if (m_data == nullptr) {
-        throw std::runtime_error("Failed to allocate for m_data");
-      }
-
-      for (int i = 0; i < m_count; i++) {
-        m_data[i] = data[i];
-      }
+    Vector(std::initializer_list<T> data, size_t size) {
+      m_size = size;
+      m_storage = data;
     }
 
-    Vector(const Vector<T>& other) {
-
-      m_count = other.m_count;
-      m_data = new T[m_count];
-      memcpy(m_data, other.m_data);
-
+    explicit Vector(const Vector<T>& other) {
+      m_storage = other.m_storage;
+      m_size = other.getsize();
     }
 
     Vector& operator=(const Vector<T>& other) {
-      return Vector(other);
+      return other;
     }
 
-    ~Vector() {
-      delete[] m_data;
+    Vector& operator=(std::initializer_list<T> data) {
+      return Vector(data);
     }
+
+    virtual ~Vector() {}
 
     int getsize() const {
-      return m_count;
+      return m_size;
     }    
 
     virtual T& operator[](size_t i) const {
-      if (i >= m_count) {
-        throw std::runtime_error("Out of bounds error");
-      }
-
-      return m_data[i];
+      return m_storage[i];
     }
 
     virtual Vector& operator+(const Vector<T>& other) const {
-      if (m_count != other.m_count) {
-        throw std::runtime_error("size mismatch in operator+ of vector");
+      if (other.getsize() != this->getsize()) {
+        throw std::runtime_error("Size mismatch");
+      } 
+      std::vector<T> temp;
+      for (auto& i : temp) {
+        i = m_storage[i] + other[i];
       }
-
-      std::array<T, m_count> temp;
-      for (int i = 0; i < m_count; i++) {
-        temp[i] = m_data[i] + other[i];
-      }
-
-      return Vector<T>(temp);
+      return Vector(temp);
     }
 
     virtual Vector& operator-(const Vector<T>& other) const {
-      if (m_count != other.m_count) {
-        throw std::runtime_error("size mismatch in operator- of vector");
+      if (getsize() != other.getsize()) {
+        throw std::runtime_error("Size mismatch");
       }
-
-      std::array<T, m_count> temp;
-      for (int i = 0; i < m_count; i++) {
-        temp[i] = m_data[i] + other[i];
+      std::vector<T> temp;
+      for (auto& i : temp) {
+        i = m_storage[i] - other[i];
       }
-
-      return Vector<T>(temp);
+      return Vector(temp);
     }
 
+    virtual Vector& operator*(T scalar) const {
+      std::vector<T> temp; 
+      for (int i = 0; i < getsize(); i++) {
+        temp[i] = m_storage[i] * scalar;
+      }
+      return Vector(temp);
+    }
 
-
-  private:
+    friend Vector& operator*(T scalar, const Vector<T>& vec);
     
-    T* m_data;
-    size_t m_count;
+    friend std::ostream& operator<<(std::ostream& os, const Vector<T>& vector);
+
+    friend std::istream& operator>>(std::istream& is, Vector<T>& vector);
+  private: 
+  
+    std::vector<T> m_storage;
+    size_t m_size;
 
 };
+
+template<typename T>
+Vector<T>& operator*(T scalar, const Vector<T>& vec) {
+  std::vector<T> temp;
+  for (int i = 0; i < vec.getsize(); i++) {
+    temp[i] = scalar * vec[i];
+  }
+  return Vector(temp);
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const Vector<T>& vec) {
+  os << "(";
+  for (int i = 0; i < vec.getsize(); i++) {
+    os << vec[i] << (i == vec.getsize() - 1 ? "" : ", ");
+  }
+  os << ")";
+  return os;
+}
+
+template<typename T>
+std::istream& operator>>(std::istream& is, Vector<T>& vec) {
+  for (int i = 0; i < vec.getsize(); i++) {
+    is >> vec[i];
+  }
+  return is;
+}
 
 #endif // VECTOR_H
 
