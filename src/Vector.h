@@ -19,7 +19,7 @@ class Vector {
 
     explicit Vector(const Vector<T>& other) {
       m_storage = other.m_storage;
-      m_size = other.getsize();
+      m_size = other.getSize();
     }
 
     Vector& operator=(const Vector<T>& other) {
@@ -32,7 +32,7 @@ class Vector {
 
     virtual ~Vector() {}
 
-    int getsize() const {
+    int getSize() const {
       return m_size;
     }    
 
@@ -41,7 +41,7 @@ class Vector {
     }
 
     virtual Vector& operator+(const Vector<T>& other) const {
-      if (other.getsize() != this->getsize()) {
+      if (other.getSize() != this->getSize()) {
         throw std::runtime_error("Size mismatch");
       } 
       std::vector<T> temp;
@@ -52,7 +52,7 @@ class Vector {
     }
 
     virtual Vector& operator-(const Vector<T>& other) const {
-      if (getsize() != other.getsize()) {
+      if (getSize() != other.getSize()) {
         throw std::runtime_error("Size mismatch");
       }
       std::vector<T> temp;
@@ -64,7 +64,7 @@ class Vector {
 
     virtual Vector& operator*(T scalar) const {
       std::vector<T> temp; 
-      for (int i = 0; i < getsize(); i++) {
+      for (int i = 0; i < getSize(); i++) {
         temp[i] = m_storage[i] * scalar;
       }
       return Vector(temp);
@@ -85,7 +85,7 @@ class Vector {
 template<typename T>
 Vector<T>& operator*(T scalar, const Vector<T>& vec) {
   std::vector<T> temp;
-  for (int i = 0; i < vec.getsize(); i++) {
+  for (int i = 0; i < vec.getSize(); i++) {
     temp[i] = scalar * vec[i];
   }
   return Vector(temp);
@@ -94,8 +94,8 @@ Vector<T>& operator*(T scalar, const Vector<T>& vec) {
 template<typename T>
 std::ostream& operator<<(std::ostream& os, const Vector<T>& vec) {
   os << "(";
-  for (int i = 0; i < vec.getsize(); i++) {
-    os << vec[i] << (i == vec.getsize() - 1 ? "" : ", ");
+  for (int i = 0; i < vec.getSize(); i++) {
+    os << vec[i] << (i == vec.getSize() - 1 ? "" : ", ");
   }
   os << ")";
   return os;

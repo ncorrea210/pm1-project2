@@ -4,7 +4,10 @@
 #include <stdexcept>
 
 // Default constructor
-Matrix::Matrix() {}
+Matrix::Matrix() : data({}, 0) {
+    numCols = 0;
+    numRows = 0;
+}
 
 // Constructor with rows and columns
 // YOUR CODE HERE
