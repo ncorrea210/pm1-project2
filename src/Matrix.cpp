@@ -36,12 +36,12 @@ Matrix::~Matrix() {}
 
 // Number of rows
 int Matrix::getRows() const {
-    return data.getSize();
+    return numRows;
 }
 
 // Number of columns
 int Matrix::getCols() const {
-    return data.getSize() > 0 ? data[0].getSize() : 0;
+    return numCols;
 }
 
 // Input stream operator
