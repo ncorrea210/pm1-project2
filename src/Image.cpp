@@ -41,32 +41,64 @@ Image::Image(const std::string& filePath, int numChannels, int width, int height
 // Assignment operator
 Image& Image::operator=(const Image& other) {
     // YOUR CODE HERE
+    if (this == &other) return *this;
+    
+    filePath = other.filePath;
+    numChannels = other.numChannels;
+    width = other.width;
+    height = other.height;
+    Matrix::operator=(other);
+
     return *this;
 }
 
 // Destructor
 Image::~Image() {
     //YOUR CODE HERE
+    // no heap memory was allocated that we need to manage
+    // std::vector will handle it for us
 }
 
 // Scaling an image
 Image Image::operator*(double scalar) const {
     // YOUR CODE HERE
+    Image other{*this};
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            other.data[i][j] = (uint8_t)((double)data[i][j] * scalar);
+        }
+    }
+    return other;
 }
 
 // Adding two images
 Image Image::operator+(const Image& other) const {
    // YOUR CODE HERE
+   Image ret{*this};
+   for (int i = 0; i < height; i++) {
+       for (int j = 0; j < width; j++) {
+        ret.data[i][j] = this->data[i][j] + other.data[i][j];
+       }
+   }
+   return ret;
 }
 
 // Subtracting two images
 Image Image::operator-(const Image& other) const {
     // YOUR CODE HERE
+    Image ret{*this};
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            ret.data[i][j] = this->data[i][j] - other.data[i][j];
+        }
+    }
+    return ret;
 }
 
 // Multiplying two images
 Image Image::operator*(const Image& other) const {
     // YOUR CODE HERE
+    return Image(*this);
 }
 
 
