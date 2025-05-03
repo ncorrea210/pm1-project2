@@ -169,5 +169,31 @@ void Image::save(const std::string& filePath) const {
 
 void Image::resize(int newWidth, int newHeight) {
     // YOUR CODE HERE
+    if (newWidth == width && newHeight == height) return;
+    Image newimg{"", numChannels, newWidth, newHeight};
+    for (int c = 0; c < numChannels; c++) {
+        for (int i = 0; i < newHeight; i++) {
+            for (int j = 0; j < newWidth; j++) {
+                if (i >= height || j >= width) {
+                    newimg.data[i][j*numChannels + c] = 0;
+                } else {
+                    newimg.data[i][j*numChannels+c] = this->data[i][j*numChannels+c];
+                }
+            }
+        }
+    }
+    *this = newimg;
+}
+
+Image Image::transpose() {
+    Image res{"", height, width, numChannels};
+    for (int c = 0; c < numChannels; c++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                res[j][numChannels*i+c] = data[i][numChannels*j+c];
+            }
+        }
+    }
+    return res;
 }
 

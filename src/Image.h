@@ -47,6 +47,8 @@ public:
     // Resize function
     void resize(int newWidth, int newHeight);
 
+    Image transpose();
+
     // Get width of the image
     int getWidth() const;
 
