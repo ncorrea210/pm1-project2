@@ -179,20 +179,32 @@ void Image::save(const std::string& filePath) const {
 
 void Image::resize(int newWidth, int newHeight) {
     // YOUR CODE HERE
-    if (newWidth == width && newHeight == height) return;
-    Image newimg{"", numChannels, newWidth, newHeight};
-    for (int c = 0; c < numChannels; c++) {
-        for (int i = 0; i < newHeight; i++) {
-            for (int j = 0; j < newWidth; j++) {
-                if (i >= height || j >= width) {
-                    newimg.data[i][j*numChannels + c] = 0;
-                } else {
-                    newimg.data[i][j*numChannels+c] = this->data[i][j*numChannels+c];
-                }
+    std::vector<uint8_t> input(height * width * numChannels);
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            for (int c = 0; c < numChannels; ++c) {
+                input[(i * width + j) * numChannels + c] = data[i][j * numChannels + c];
             }
         }
     }
-    *this = newimg;
+    std::vector<uint8_t> output(newHeight * newWidth * numChannels);
+    int success = stbir_resize_uint8(input.data(),  width,  height, 0, output.data(), newWidth, newHeight, 0, numChannels);
+    if (!success) throw std::runtime_error("stbir_resize_uint8 failed");
+    Vector<Vector<uint8_t>> newvec(newHeight);
+    for (int i = 0; i < newHeight; ++i) {
+        newvec[i] = Vector<uint8_t>(newWidth * numChannels);
+        for (int j = 0; j < newWidth; ++j) {
+            for (int c = 0; c < numChannels; ++c) {
+                newvec[i][j * numChannels + c] = output[(i * newWidth + j) * numChannels + c];
+            }
+        }
+    }
+    Matrix newmat(height, width*numChannels);
+    newmat.data = newvec;
+    Matrix::operator=(newmat);
+    width = newWidth;
+    height = newHeight;
+
 }
 
 Image Image::transpose() {

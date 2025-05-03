@@ -8,7 +8,7 @@
 #include "Vector.h"
 
 class Matrix {
-
+    friend class Image;
 protected:
     Vector<Vector<uint8_t>> data;
 
