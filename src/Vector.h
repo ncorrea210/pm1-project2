@@ -30,13 +30,22 @@ class Vector {
       return Vector(data);
     }
 
+    Vector(size_t size) {
+      m_size = size;
+      m_storage = std::vector<T>(size);
+    }
+
     virtual ~Vector() {}
 
     int getSize() const {
       return m_size;
     }    
 
-    virtual T& operator[](size_t i) const {
+    virtual T& operator[](size_t i) {
+      return m_storage[i];
+    }
+
+    virtual const T& operator[](size_t i) const {
       return m_storage[i];
     }
 
