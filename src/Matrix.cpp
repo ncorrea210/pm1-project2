@@ -1,4 +1,4 @@
-// Matrix.cpp
+// Matri.cpp
 
 #include "Matrix.h"
 #include <stdexcept>

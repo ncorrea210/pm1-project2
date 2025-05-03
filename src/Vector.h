@@ -23,16 +23,30 @@ class Vector {
     }
 
     Vector& operator=(const Vector<T>& other) {
-      return other;
+
+      if (this == &other) return *this;
+      m_storage = other.m_storage;
+      m_size = other.m_size;
+
+      return *this;
     }
 
     Vector& operator=(std::initializer_list<T> data) {
-      return Vector(data);
+      
+      m_storage = data;
+      m_size = data.size();
+
+      return *this;
     }
 
     Vector(size_t size) {
       m_size = size;
       m_storage = std::vector<T>(size);
+    }
+
+    Vector() {
+      m_size = 0;
+      m_storage = std::vector<T>(0);
     }
 
     virtual ~Vector() {}
@@ -41,15 +55,15 @@ class Vector {
       return m_size;
     }    
 
-    virtual T& operator[](size_t i) {
+    T& operator[](size_t i) {
       return m_storage[i];
     }
 
-    virtual const T& operator[](size_t i) const {
+    const T& operator[](size_t i) const {
       return m_storage[i];
     }
 
-    virtual Vector& operator+(const Vector<T>& other) const {
+    Vector operator+(const Vector<T>& other) const {
       if (other.getSize() != this->getSize()) {
         throw std::runtime_error("Size mismatch");
       } 
@@ -60,7 +74,7 @@ class Vector {
       return Vector(temp);
     }
 
-    virtual Vector& operator-(const Vector<T>& other) const {
+    Vector operator-(const Vector<T>& other) const {
       if (getSize() != other.getSize()) {
         throw std::runtime_error("Size mismatch");
       }
@@ -71,7 +85,7 @@ class Vector {
       return Vector(temp);
     }
 
-    virtual Vector& operator*(T scalar) const {
+    Vector operator*(T scalar) const {
       std::vector<T> temp; 
       for (int i = 0; i < getSize(); i++) {
         temp[i] = m_storage[i] * scalar;
@@ -79,7 +93,7 @@ class Vector {
       return Vector(temp);
     }
 
-    friend Vector& operator*(T scalar, const Vector<T>& vec);
+    friend Vector operator*(T scalar, const Vector<T>& vec);
     
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& vector);
 
