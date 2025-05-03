@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
+#include <utility>
 
 // Default constructor
 Image::Image() : Matrix(), filePath(""), numChannels(0), width(0), height(0) {}
@@ -113,7 +114,7 @@ Image Image::operator-(const Image& other) const {
     Image ret;
     ret = *this;
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < numChannels*width; j++) {
             ret.data[i][j] = (this->data[i][j] - other.data[i][j]) < 0 ? 0 : this->data[i][j] - other.data[i][j];
         }
     }
@@ -124,12 +125,17 @@ Image Image::operator-(const Image& other) const {
 Image Image::operator*(const Image& other) const {
     // YOUR CODE HERE
     Image ret = *this;
+    if (this->getHeight() != other.getHeight()) throw std::runtime_error("size mismatch in Image::operator*");
+    if (this->numChannels != other.numChannels) throw std::runtime_error("num channel mismatch in Image::operator*");
     
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            ret.data[i][j] = 0;
-            for (int k = 0; k < width; k++) {
-                ret.data[i][j] += (this->data[i][j] + other.data[i][j]) > 255 ? 255 : this->data[i][j] + other.data[i][j];
+    for (int chans = 0; chans < numChannels; chans++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                uint32_t sum = 0;
+                for (int k = 0; k < width; k++) {
+                    sum += this->data[i][k*numChannels + chans] * other.data[k][j*numChannels + chans];
+                }
+                ret[i][j*numChannels + chans] = (uint8_t)std::min(sum, (uint32_t)255);
             }
         }
     }
