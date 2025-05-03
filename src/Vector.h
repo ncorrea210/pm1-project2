@@ -56,10 +56,18 @@ class Vector {
     }    
 
     T& operator[](size_t i) {
+      //size check
+      if (i >= this->getSize()) {
+        throw std::runtime_error("Size mismatch");
+      }
       return m_storage[i];
     }
 
     const T& operator[](size_t i) const {
+      //size check
+      if (i >= this->getSize()) {
+        throw std::runtime_error("Size mismatch");
+      }
       return m_storage[i];
     }
 
