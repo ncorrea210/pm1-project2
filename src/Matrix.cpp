@@ -102,15 +102,7 @@ Matrix Matrix::operator*(const Matrix& other) const {
         throw std::invalid_argument("Matrix sizes do not match for multiplication.");
 
     Matrix result(numRows, other.numCols);
-    for (int i = 0; i < numRows; ++i) {
-        for (int j = 0; j < other.numCols; ++j) {
-            uint8_t sum = 0;
-            for (int k = 0; k < numCols; ++k) {
-                sum += data[i][k] * other.data[k][j];
-            }
-            result[i][j] = sum;
-        }
-    }
+    
     return result;
 }
 

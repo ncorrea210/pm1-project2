@@ -22,6 +22,8 @@ Image::Image(const std::string& filePath) {
     // ...
 
     if (imageData == nullptr) throw std::runtime_error("failed to load image data");
+    
+    *this = Image(filePath, channels, width, height);
 
     int index = 0;
     for (int i = 0; i < height; i++) {
@@ -44,7 +46,7 @@ Image::Image(const std::string& filePath) {
 
 // Constructor with file path, channels, width, and height
 Image::Image(const std::string& filePath, int numChannels, int width, int height)
-    : Matrix(height, width), filePath(filePath), numChannels(numChannels), width(width), height(height) {}
+    : Matrix(height, numChannels*width), filePath(filePath), numChannels(numChannels), width(width), height(height) {}
 
 // Copy constructor
 // YOUR CODE HERE
@@ -85,7 +87,7 @@ Image Image::operator*(double scalar) const {
     Image other;
     other = *this;
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < numChannels*width; j++) {
             other.data[i][j] = (uint8_t)((double)data[i][j] * scalar) > 255 ? 255 : (uint8_t)((double)data[i][j] * scalar);
         }
     }
@@ -98,7 +100,7 @@ Image Image::operator+(const Image& other) const {
    Image ret;
    ret = *this;
    for (int i = 0; i < height; i++) {
-       for (int j = 0; j < width; j++) {
+       for (int j = 0; j < numChannels*width; j++) {
         ret.data[i][j] = ((this->data[i][j] + other.data[i][j]) > 255) ? 255 : this->data[i][j] + other.data[i][j];
        }
    }
