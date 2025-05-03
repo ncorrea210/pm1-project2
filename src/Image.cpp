@@ -98,6 +98,11 @@ Image Image::operator*(double scalar) const {
 // Adding two images
 Image Image::operator+(const Image& other) const {
    // YOUR CODE HERE
+    //size check:
+    if (this->height != other.height || this->width != other.width || this->numChannels != other.numChannels) {
+        throw std::runtime_error("Size mismatch in Image::operator+");
+    }
+    
    Image ret;
    ret = *this;
    for (int i = 0; i < height; i++) {
@@ -111,6 +116,11 @@ Image Image::operator+(const Image& other) const {
 // Subtracting two images
 Image Image::operator-(const Image& other) const {
     // YOUR CODE HERE
+    //size check:
+    if (this->height != other.height || this->width != other.width || this->numChannels != other.numChannels) {
+        throw std::runtime_error("Size mismatch in Image::operator-");
+    }
+    
     Image ret;
     ret = *this;
     for (int i = 0; i < height; i++) {
