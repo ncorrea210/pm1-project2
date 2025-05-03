@@ -21,6 +21,17 @@ Image::Image(const std::string& filePath) {
     //  that allows you to initialize it with image data)
     // ...
 
+    if (imageData == nullptr) throw std::runtime_error("failed to load image data");
+
+    int index = 0;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            for (int k = 0; k < channels; k++) {
+                data[i][j*channels + k] = imageData[index++];
+            }
+        }
+    }
+
     // Set the Image properties
     this->filePath = filePath;
     this->numChannels = channels;
@@ -37,6 +48,15 @@ Image::Image(const std::string& filePath, int numChannels, int width, int height
 
 // Copy constructor
 // YOUR CODE HERE
+Image::Image(const Image& other) {
+    if (this == &other) return;
+    Matrix::operator=(other);
+    filePath = other.filePath;
+    numChannels = other.numChannels;
+    width = other.width;
+    height = other.height;
+
+}
 
 // Assignment operator
 Image& Image::operator=(const Image& other) {
@@ -66,7 +86,7 @@ Image Image::operator*(double scalar) const {
     other = *this;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            other.data[i][j] = (uint8_t)((double)data[i][j] * scalar);
+            other.data[i][j] = (uint8_t)((double)data[i][j] * scalar) > 255 ? 255 : (uint8_t)((double)data[i][j] * scalar);
         }
     }
     return other;
@@ -79,7 +99,7 @@ Image Image::operator+(const Image& other) const {
    ret = *this;
    for (int i = 0; i < height; i++) {
        for (int j = 0; j < width; j++) {
-        ret.data[i][j] = this->data[i][j] + other.data[i][j];
+        ret.data[i][j] = ((this->data[i][j] + other.data[i][j]) > 255) ? 255 : this->data[i][j] + other.data[i][j];
        }
    }
    return ret;
@@ -92,7 +112,7 @@ Image Image::operator-(const Image& other) const {
     ret = *this;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            ret.data[i][j] = this->data[i][j] - other.data[i][j];
+            ret.data[i][j] = (this->data[i][j] - other.data[i][j]) < 0 ? 0 : this->data[i][j] - other.data[i][j];
         }
     }
     return ret;
@@ -101,8 +121,17 @@ Image Image::operator-(const Image& other) const {
 // Multiplying two images
 Image Image::operator*(const Image& other) const {
     // YOUR CODE HERE
-    Image ret;
-    ret = *this;
+    Image ret = *this;
+    
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            ret.data[i][j] = 0;
+            for (int k = 0; k < width; k++) {
+                ret.data[i][j] += (this->data[i][j] + other.data[i][j]) > 255 ? 255 : this->data[i][j] + other.data[i][j];
+            }
+        }
+    }
+
     return ret;
 }
 
