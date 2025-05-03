@@ -62,7 +62,8 @@ Image::~Image() {
 // Scaling an image
 Image Image::operator*(double scalar) const {
     // YOUR CODE HERE
-    Image other{*this};
+    Image other;
+    other = *this;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             other.data[i][j] = (uint8_t)((double)data[i][j] * scalar);
@@ -74,7 +75,8 @@ Image Image::operator*(double scalar) const {
 // Adding two images
 Image Image::operator+(const Image& other) const {
    // YOUR CODE HERE
-   Image ret{*this};
+   Image ret;
+   ret = *this;
    for (int i = 0; i < height; i++) {
        for (int j = 0; j < width; j++) {
         ret.data[i][j] = this->data[i][j] + other.data[i][j];
@@ -86,7 +88,8 @@ Image Image::operator+(const Image& other) const {
 // Subtracting two images
 Image Image::operator-(const Image& other) const {
     // YOUR CODE HERE
-    Image ret{*this};
+    Image ret;
+    ret = *this;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             ret.data[i][j] = this->data[i][j] - other.data[i][j];
@@ -98,7 +101,9 @@ Image Image::operator-(const Image& other) const {
 // Multiplying two images
 Image Image::operator*(const Image& other) const {
     // YOUR CODE HERE
-    return Image(*this);
+    Image ret;
+    ret = *this;
+    return ret;
 }
 
 
